@@ -2,5 +2,6 @@
 
 This is a online Voting Platform using Nodejs.
 This is a platform for election admin.
-In this project admin can login and sign up authentication, add elections and modify election and also add, delete options in each corresponding election. 
-This is the initial implementation.
+In this admin can login and sign up these authentications, can add elections and modify election and also can add, delete options in each corresponding election. 
+This is the initial implementation only.
+
