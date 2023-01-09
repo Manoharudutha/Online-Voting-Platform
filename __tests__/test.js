@@ -75,6 +75,9 @@ describe("first", () => {
     expect(res.statusCode).toBe(200);
   });
 
+  //   const response = await agent.get("/election");
+  //   count = response.body.elections.length;
+
   test("signout admin", async () => {
     login();
     await agent.get("/signout");
