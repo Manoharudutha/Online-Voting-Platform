@@ -1,0 +1,24 @@
+<div class="flex flex-col gap-2 w-full">
+  <div class="flex flex-col justify-center items-center text-blue-800">
+    <%- include ('header') %>
+  </div>
+  <div class="text-black flex flex-col justify-between items-center">
+    <div class="flex flex-col md:w-2/5 w-full">
+      <div class="flex justify-between w-full">
+        <div class="flex justify-center items-center gap-2">
+          <i class="fa fa-user flex items-center justify-center"></i>
+          <p class="font-semibold text-xl flex items-center justify-center">
+            <%= username %>
+          </p>
+        </div>
+        <div class="flex gap-4">
+          <a
+            class="text-white hover:bg-red-500 bg-red-600 p-2 rounded-lg"
+            href="/signout"
+            >Sign Out</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

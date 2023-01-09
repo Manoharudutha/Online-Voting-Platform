@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>New Election | Online Voting Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script>
+      function updateElection(id) {
+        console.log("called");
+        fetch(`/election/${id}`, {
+          method: "PUT",
+          body: { name: "name" },
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.navigate("/home");
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    </script>
+  </head>
+  <body class="bg-red-100 h-full w-full">
+    <div class="flex justify-center text-blue-800">
+      <%- include ('header') %>
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <div class="flex justify-between">
+          <div class="flex justify-center items-center gap-2">
+            <i class="fa fa-user flex items-center justify-center"></i>
+            <p class="font-semibold text-xl flex items-center justify-center">
+              <%= username %>
+            </p>
+          </div>
+          <a
+            class="text-white hover:bg-red-500 bg-red-600 p-2 rounded-lg"
+            href="/signout"
+            >Sign Out</a
+          >
+        </div>
+        <hr class="mt-2" />
+        <div class="pt-6">
+          <p class="font-bold text-3xl">Edit Election</p>
+          <div class="flex justify-center">
+            <form class="pt-8 flex flex-col gap-4 justify-center items-center">
+              <div class="flex flex-col w-full">
+                <label for="name">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value="<%= election.name %>"
+                  class="p-2 square-lg"
+                />
+              </div>
+              <button
+                onclick="updateElection(<%= election.id %>)"
+                class="bg-green-700 hover:bg-green-600 font-bold text-white p-2 rounded-lg flex justify-center px-6"
+              >
+                Update
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
