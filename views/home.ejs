@@ -7,10 +7,10 @@
     <title>Online Voting Platform</title>
     <link rel="stylesheet" href="./css/style.css" />
   </head>
-  <body class="p-4">
+  <body class="overflow-hidden">
     <div class="flex flex-col justify-center items-center gap-6">
       <div class="col-start-3 col-span-2"><%- include('header.ejs') %></div>
-      <div class="isolate bg-white">
+      <div class="isolate bg-white" style="margin-top:-20px;">
         <div
           class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         >
@@ -41,7 +41,7 @@
           </svg>
         </div>
         <main>
-          <div class="relative px-6 lg:px-8">
+          <div class="relative px-6 lg:px-8" style="margin-top:-80px;">
             <div class="mx-auto max-w-3xl pt-20 pb-32 sm:pt-48 sm:pb-40">
               <div>
                 <div>
@@ -68,10 +68,10 @@
                         >&rarr;</span
                       >
                       Log In </a
-                    >&nbsp;&nbsp;&nbsp;&nbsp; Are You New here?
+                    >&nbsp;&nbsp;&nbsp;&nbsp; Are you new here?
                     <a
                       href="/signup"
-                      class="inline-block rounded-lg px-4 py-1.5 text-base font-semibold leading-7 text-gray-900 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+                      class="inline-block rounded-lg px-4 py-1.5 text-base font-semibold leading-7 text-gray-900 ring-1 ring-gray-900/10 hover:bg-gray-900/20"
                     >
                       <span class="text-gray-400" aria-hidden="true"
                         >&rarr;</span
@@ -113,8 +113,8 @@
             </div>
           </div>
         </main>
+        <div class="flex justify-center pt-6" style="margin-top:-80px;"><%- include('footer.ejs') %></div>
       </div>
     </div>
-    <div class="flex justify-center pt-6"><%- include('footer.ejs') %></div>
   </body>
 </html>
