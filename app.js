@@ -965,7 +965,7 @@ app.post(
   }
 );
 
-// edit option frontend
+// edit option frontend design
 app.get(
   "/election/:electionID/question/:questionID/option/:optionID/edit",
   connectEnsureLogin.ensureLoggedIn(),
