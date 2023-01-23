@@ -1062,7 +1062,7 @@ app.post(
   }
 );
 
-// cast vote frontend
+// cast vote frontend design
 app.get("/election/:id/vote", async (request, response) => {
   const election = await Election.findByPk(request.params.id);
 
