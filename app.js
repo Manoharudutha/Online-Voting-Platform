@@ -506,7 +506,7 @@ app.delete(
   }
 );
 
-// delete question
+// delete question functionality
 app.delete(
   "/election/:id/question/:questiondID",
   connectEnsureLogin.ensureLoggedIn(),
