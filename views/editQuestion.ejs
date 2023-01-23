@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <title>Edit Question - Online Voting Platform</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="min-h-screen w-full">
+    <div class="flex justify-center text-blue-800">
+      <%- include ('updatedHeader', {username: username}) %>
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <hr />
+        <div class="pt-6 flex justify-between">
+          <a href="/election/<%= election.id %>" class="font-bold text-blue-700 text-4xl underline hover:text-blue-800"
+            ><%= election.name %></a
+          >
+        </div>
+
+        <!-- Update Question -->
+        <div class="pt-6">
+          <p class="text-gray-600 text-2xl">Edit Question</p>
+          <form
+            method="post"
+            action="/election/<%= election.id %>/question/<%= question.id %>/update"
+            class="flex flex-col gap-4 pt-4"
+          >
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
+            <div class="flex flex-col w-full">
+              <input
+                type="text"
+                name="title"
+                value="<%= question.title %>"
+                placeholder="Title"
+                class="border-2 border-gray-400 p-2 rounded-lg"
+              />
+            </div>
+            <div class="flex flex-col w-full">
+              <input
+                type="text"
+                name="description"
+                value="<%= question.description %>"
+                placeholder="Description"
+                class="border-2 border-gray-400 p-2 rounded-lg"
+              />
+            </div>
+            <div class="flex justify-center items-center w-full gap-4">
+              <button
+                type="submit"
+                class="inline-block rounded-lg text-white bg-green-600 hover:bg-green-800 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm"
+              >
+                Update
+              </button>
+              <a
+                href="/election/<%= election.id %>/question/<%= question.id %>"
+                type="reset"
+                class="bg-red-400 transition duration-200 text-white font-semibold p-2 rounded-lg hover:bg-red-600 px-6"
+              >
+                Cancel
+              </a>
+            </div>
+          </form>
+
+          <!-- flash message -->
+          <div class="flex flex-col justify-center items-center gap-3 pt-4">
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+              <% for(var i=0; i<messages.error.length; i++) {%>
+                <div class="bg-red-300 text-red-900 font-semibold p-2 rounded-lg shadow"> <%= messages.error[i] %></div>
+              <% } %>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

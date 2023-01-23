@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="csrf-token" content="<%= csrf %>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>sign Up new user</title>
@@ -21,6 +22,7 @@
                   </h1>
                   <form action="/users"
                   method="post" class="space-y-4 md:space-y-6" action="#">
+                  <input type="hidden" name="_csrf" value="<%= csrf%>">
                       <div>
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Name</label>
                         <input type="text"

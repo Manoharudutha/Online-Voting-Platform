@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title><%= %>Online Voting Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="min-h-screen w-full">
+    <div class="flex justify-center text-blue-800">
+      <%- include ('header') %>
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <hr />
+        <div class="flex justify-center pb-8">
+          <p class="text-4xl font-semibold pt-4"><%= election.name %> Preview</p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <% for (var i=0; i<questions.length; i++) { %>
+                <div>
+                    <p class="font-bold text-xl"><%= i+1 %>. <%= questions[i].title %></p>
+                    <p class="text-gray-600"><%= questions[i].description %></p>
+
+                    <div class="pt-2 pl-6">
+                        <% for (var j=0; j<options[i].length; j++) { %>
+                          <div class="flex gap-2">
+                            <input
+                                class="border-2 flex items-center border-gray-400 p-2 rounded-lg"
+                                id="<%= questions[i].id %>-<%= options[i][j].id %>"
+                                type="radio"
+                                value="<%= options[i][j].id %>"
+                                name="<%= questions[i].id %>"
+                            />
+                            <label for="<%= questions[i].id %>-<%= options[i][j].id %>"><%= options[i][j].value %></label>
+                          </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <a href="/election/<%= election.id %>" class="flex justify-center mt-8 p-2 rounded-lg bg-purple-500 hover:bg-purple-700 text-white">Back to Home</a>
+      </div>
+    </div>
+  </body>
+</html>

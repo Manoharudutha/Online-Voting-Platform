@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Vote - <%= election.name %> - Online Voting Platform</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body
+    class="min-h-screen w-full"
+  >
+    <div class="flex justify-center text-blue-800">
+      <%- include ('header') %>
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <hr />
+        <div class="flex justify-center pb-4">
+          <p class="text-4xl font-semibold pt-4"><%= election.name %></p>
+        </div>
+
+        <% if (election.ended) { %>
+            <div class="flex justify-center">
+            <p class="text-2xl text-gray-600">This election has ended.</p>
+            </div>
+        <% } else if (!election.launched) { %>
+            <div class="flex justify-center">
+            <p class="text-2xl text-gray-600">
+                This election has not been launched yet.
+            </p>
+            </div>
+        <% } else { %>
+            <div class="flex flex-col gap-4">
+            <% if (verified) { %>
+              <% if (voter.voted) { %>
+                  <div class="flex justify-center">
+                      <p class="text-2xl text-gray-600">Thank you for voting.</p>
+                  </div>
+              <% } else { %>
+                <%- include ('Ballot.ejs', {election: election, voter: voter}) %>
+              <% } %>                
+            <% } else { %>
+              <%- include ('voterLogin.ejs', {election: election}) %>
+            <% } %>
+            </div>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>

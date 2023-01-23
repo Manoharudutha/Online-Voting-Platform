@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title><%= election.name %> Result - Online Voting Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="min-h-screen w-full">
+    <div class="flex flex-col justify-center items-center text-blue-800">
+      <% if (admin == true) { %>
+        <%- include ('updatedHeader', {username: username}) %>
+      <% } else { %>
+        <%- include ('header') %>
+      <% } %>
+
+      <% if (!admin) { %>
+        <div class="flex gap-2 items-center text-black text-xl">
+          <i class="fa fa-user"></i> <b><%= username %>'s</b> election
+        </div>
+      <% } %>
+
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <hr />
+        <div class="pt-6">
+          <% if (admin) { %>
+            <a
+              href="/election/<%= election.id %>"
+              class="font-bold text-4xl hover:underline"
+              ><%= election.name %>'s Result</a
+            >
+          <% } else { %>
+            <p class="font-bold text-4xl"
+              ><%= election.name %>'s Result</
+            >
+          <% } %>
+          <p class="pt-2 text-gray-600 text-xl"><%= votesCast %> / <%= totalVoters %> Votes Cast</p>
+        </div>
+
+        <!-- Result -->
+        <div class="pt-8">
+          <div class="flex flex-col gap-6">
+            <% for (var i=0; i<questions.length; i++) { %>
+                <div>
+                    <p class="font-bold text-xl"><%= i+1 %>. <%= questions[i].title %></p>
+                    <p class="text-gray-600"><%= questions[i].description %></p>
+
+                    <div class="pt-6 pl-6 flex flex-col gap-4">
+                        <% for (var j=0; j<options[i].length; j++) { %>
+                          <div class="flex gap-2"><hr width="<%= data[i][j] %>%" style="height:30px; border:none; color:purple; background-color:purple;" /><p class="flex items-center gap-2 text-xl"><%= options[i][j].value %>:<b class="text-blue-700"><%= data[i][j] %>%</b></p></div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+          </div>
+          <% if (admin == true) { %>
+            <a href="/election/<%= election.id %>" class="bg-green-500 hover:bg-green-700 p-2 rounded-lg font-bold text-white flex justify-center mt-8">Return to Election</a>
+          <% } else { %>
+            <a href="/" class="bg-blue-500 hover:bg-blue-700 border-2 border-blue-800 p-2 rounded-lg font-bold text-white flex justify-center mt-8">Home</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

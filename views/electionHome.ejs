@@ -1,6 +1,8 @@
 <html>
   <head>
-    <title>Online Voting Platform</title>
+    <title><%= %>Online Voting Platform</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -9,53 +11,273 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script>
+      // end election API
+      function endElection(id) {
+        var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+        fetch(`/election/${id}/end`, {
+          method: "PUT",
+          _csrf: "<%= csrf%>",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token
+          })
+        }).then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        });
+      }
+
+      //delete voter
+      function deleteVoter(electionID, id) {
+        var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+        fetch(`/election/${electionID}/voter/${id}/delete`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token
+          })
+        }).then(res => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+      }
+    </script>
   </head>
-  <body class="bg-red-100 h-full w-full">
+  <body class="min-h-screen w-full">
     <div class="flex justify-center text-blue-800">
       <%- include ('updatedHeader', {username: username}) %>
     </div>
     <div class="flex flex-col justify-center items-center p-4">
       <div class="flex flex-col justify-center md:w-2/5 w-full">
         <hr />
-        <p class="text-4xl font-semibold"><%= election.name %></p>
-        <p class="text-xl text-gray-500"><%= questions.length %> Questions</p>
 
-        <div>
+        <% if (election.ended) { %>
+          <!-- Election ended banner -->
+          <div class="flex justify-center items-center mt-4 p-2 rounded-lg bg-red-400 border-2 border-red-500 gap-2 text-white font-bold">
+            <i class="fa fa-exclamation-triangle"></i> Election Ended
+          </div>
+        <% } else if (election.launched) { %>
+          <!-- Election live banner -->
+          <div class="flex justify-center items-center mt-4 p-2 rounded-lg bg-purple-500 border-2 border-purple-700 gap-2 text-white font-bold">
+            <i class="fa fa-exclamation-triangle"></i> Election is Live
+          </div>
+        <% } %>
+                
+        <div class="flex flex-col md:flex-row justify-between gap-4 pt-4">
+          <div>
+            <div class="flex gap-2">
+              <p class="text-4xl font-semibold"><%= election.name %></p>
+              <% if (!election.launched) { %>
+                <a
+                    class="flex items-center hover:text-blue-600"
+                    href="/election/<%= election.id %>/edit"
+                    ><i class="fa fa-edit"></i></a
+                  >
+              <% } %>
+            </div>
+            <p class="text-xl text-gray-500">
+              <%= questions.length %> Questions
+            </p>
+            <p class="text-xl text-gray-500"><%= voters.length %> Voters</p>
+          </div>
+          <div class="flex gap-4 items-center">
+            <% if (!election.ended) { %> <% if (!election.launched) { %>
+            <div class="flex flex-col md:flex-row gap-4">
+              <!-- Preview Link -->
+              <a
+                class="p-1 flex gap-2 items-center rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-bold px-4"
+                href="/election/<%= election.id %>/preview"
+                ><i class="fa fa-eye"></i> Preview</a
+              >
+              <!-- Launch Button -->
+              <a
+                href="/election/<%= election.id %>/launch"
+                class="p-1 flex gap-2 items-center rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-4"
+              >
+              <i class="fa-solid fa-rocket"></i> Launch
+              </a>
+            </div>
+            <% } else { %>
+            <div class="flex flex-col md:flex-row gap-4">
+              <!-- Public Link Button -->
+              <a
+                target="_blank"
+                href="/election/<%= election.id %>/vote"
+                class="p-1 flex gap-2 items-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold px-4"
+              >
+              <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="white"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />  <line x1="8" y1="12" x2="16" y2="12" /></svg> Public Link
+              </a>
+              <!-- Result Link -->
+              <a
+                href="/election/<%= election.id %>/result"
+                class="p-1 flex gap-2 items-center rounded-lg bg-green-600 hover:bg-green-700 text-white font-bold px-4"
+              >
+              <i class="fa-solid fa-square-poll-horizontal"></i> Result
+              </a>
+              <!-- End Link -->
+              <button
+                onclick="endElection(<%= election.id %>)"
+                class="p-1 flex gap-2 items-center rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold px-4"
+              >
+              <i class="fa-sharp fa-solid fa-hourglass-end"></i> End
+              </button>
+            </div>
+            <% } %> <% } else { %>
+            <!-- Result Button -->
+            <a
+              class="p-1 flex gap-2 items-center rounded-lg bg-green-600 hover:bg-green-700 text-white font-bold px-4"
+              href="/election/<%= election.id %>/result"
+              ><i class="fa-solid fa-square-poll-horizontal"></i> Result</a
+            >
+            <% } %>
+          </div>
+        </div>
+
+        <!-- flash message -->
+        <div class="flex flex-col justify-center items-center gap-3 pt-4">
+          <% if (messages && messages.launch && messages.launch.length > 0) { %>
+            <% for(var i=0; i<messages.launch.length; i++) {%>
+              <div class="bg-red-300 text-red-900 font-semibold p-2 rounded-lg shadow"> <%= messages.launch[i] %></div>
+            <% } %>
+          <% } %>
+        </div>
+
+        <!-- Add new question -->
+        <% if (!election.launched) { %>
+          <p class="text-black text-xl pt-6">Add Question</p>
+          <div>
+            <form
+              action="/election/<%= election.id %>/questions/add"
+              method="post"
+              class="flex flex-col md:flex-row gap-4 pt-2"
+            >
+              <input type="hidden" value="<%= csrf %>" name="_csrf">
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Title"
+                  class="border-2 border-gray-400 p-2 rounded-lg"
+                />
+              </div>
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Description"
+                  class="border-2 border-gray-400 p-2 rounded-lg"
+                />
+              </div>
+              <div class="flex justify-center items-center">
+                <button
+                  type="submit"
+                  class="inline-block rounded-lg text-white bg-green-600 hover:bg-green-800 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- flash message -->
+          <div class="flex flex-col justify-center items-center gap-3 pt-4">
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+              <% for(var i=0; i<messages.error.length; i++) {%>
+                <div class="bg-red-300 text-red-900 font-semibold p-2 rounded-lg shadow"> <%= messages.error[i] %></div>
+              <% } %>
+            <% } %>
+          </div>
+        <% } %>
+
+        <!-- List of Questions -->
+        <p class="font-semibold pt-4 text-xl">Questions</p>
+        <%- include ('questionList.ejs', {questions: questions, election:
+        election}) %>
+
+        <!-- Voter Section -->
+
+        <!-- Add New Voter if election not ended -->
+        <% if (!election.ended) { %>
+          <p class="text-xl">Add Voter</p>
           <form
-            action="/election/<%= election.id %>/questions/add"
+            action="/election/<%= election.id %>/voters/add"
             method="post"
-            class="flex flex-col md:flex-row gap-4 pt-4"
+            class="flex flex-col md:flex-row gap-4 pt-2"
           >
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
             <div class="flex flex-col">
               <input
                 type="text"
-                name="title"
-                placeholder="Title"
-                class="border-1 border-black p-2 square-lg"
+                name="voterID"
+                placeholder="Voter ID"
+                class="border-2 border-gray-400 p-2 rounded-lg"
               />
             </div>
             <div class="flex flex-col">
               <input
-                type="text"
-                name="description"
-                placeholder="Description"
-                class="border-1 border-black p-2 square-lg"
+                type="password"
+                name="password"
+                placeholder="Password"
+                class="border-2 border-gray-400 p-2 rounded-lg"
               />
             </div>
             <div class="flex justify-center items-center">
               <button
                 type="submit"
-                class="bg-green-700 border-2 p-2 rounded-lg hover:bg-green-500 text-white px-6"
+                class="inline-block rounded-lg text-white bg-green-600 hover:bg-green-800 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm"
               >
                 Add
               </button>
             </div>
           </form>
+        <% } %>
+
+        <!-- flash message -->
+        <div class="flex flex-col justify-center items-center gap-3 pt-4">
+          <% if (messages && messages.voterError && messages.voterError.length > 0) { %>
+            <% for(var i=0; i<messages.voterError.length; i++) {%>
+              <div class="bg-red-300 text-red-900 font-semibold p-2 rounded-lg shadow"> <%= messages.voterError[i] %></div>
+            <% } %>
+          <% } %>
         </div>
 
-        <p class="font-semibold pt-4 text-xl">Questions</p>
-        <%- include ('questionList.ejs', {questions: questions, election:
-        election}) %>
+        <!-- List of Voters -->
+        <p class="font-semibold pt-4 text-xl">Voters</p>
+        <% if (voters.length === 0) { %>
+          <h1 class="text-2xl flex justify-center text-gray-600 font-semibold">No voters yet</h1>
+        <% } %>
+        <div class="flex flex-col justify-center items-center p-4">
+          <div class="flex flex-col gap-4 justify-center w-full p-4">
+            <% for (var i=0; i<voters.length; i++) { %>
+                <div class="flex justify-between gap-6">
+                    <li class="text-xl"><%= voters[i].voterID %></li>
+                    <% if (!election.ended) { %>
+                      <div class="flex gap-4 justify-center items-center">
+                        <% if (voters[i].voted) { %>
+                          <div class="text-gray-600"><i class="fa fa-check"></i> Voted</div>
+                        <% } else { %>
+                          <div onclick="deleteVoter(<%= election.id %>, <%= voters[i].id %>)" class="cursor-pointer hover:text-red-500 transition duration-200"><button class="p-1 flex gap-2 items-center rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold px-4">Delete</button></div>
+                        <% } %>
+                          <!-- <div onclick="deleteElection('<%= voters[i].id %>')"><i class="cursor-pointer fa fa-trash hover:text-red-500 transition duration-200"></i></div> -->
+                      </div>
+                    <% } %>
+                </div>
+            <% } %>
+          </div>
+        </div>
       </div>
     </div>
   </body>

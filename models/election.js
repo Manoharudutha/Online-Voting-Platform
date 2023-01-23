@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       Election.hasMany(models.question, {
         foreignKey: "electionID",
       });
+      Election.hasMany(models.Voter, {
+        foreignKey: "electionID",
+      });
     }
 
     static async add(adminID, name) {
@@ -26,10 +29,40 @@ module.exports = (sequelize, DataTypes) => {
       });
       return res;
     }
+
+    static async launch(id) {
+      const res = await Election.update(
+        { launched: true },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+      return res;
+    }
+
+    static async end(id) {
+      const res = await Election.update(
+        { ended: true },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+      return res;
+    }
   }
   Election.init(
     {
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+        },
+      },
       launched: DataTypes.BOOLEAN,
       ended: DataTypes.BOOLEAN,
     },

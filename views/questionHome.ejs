@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <title><%= question.title %> - <%= election.name %> - Online Voting Platform</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script>
+        function deleteOption(id) {
+          var token = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+
+            fetch(`/election/<%= election.id %>/question/<%= question.id %>/option/${id}`, {
+                method: "DELETE",
+                headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ _csrf: token })
+            }).then(res => {
+                    if (res.ok === true) {
+                        window.location.reload()
+                    }
+                })
+        }
+    </script>
+  </head>
+  <body class="min-h-screen w-full">
+    <div class="flex justify-center text-blue-800">
+      <%- include ('updatedHeader', {username: username}) %>
+    </div>
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <hr />
+        <a href="/election/<%= election.id %>" class="font-bold text-blue-700 text-4xl underline hover:text-blue-800"
+          ><%= election.name %></a
+        >
+        <div class="flex gap-2 pt-6">
+            <p class="flex items-center text-gray-600">Question:</p>
+            <p class="text-2xl"><%= question.title %></p>
+        </div>
+        <div class="flex gap-2">
+            <p class="flex items-center text-gray-600">Description:</p>
+            <p class="text-xl"><%= question.description %></p>
+        </div>
+
+        <% if (!election.launched) { %>
+          <!-- Add new option -->
+          <p class="text-black text-xl pt-6">Add Option</p>
+          <div>
+            <form
+              action="/election/<%= election.id %>/question/<%= question.id %>/options/add"
+              method="post"
+              class="flex flex-col md:flex-row gap-4 pt-2"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrf %>">
+              <div class="flex flex-col w-full">
+                <input
+                  type="text"
+                  name="option"
+                  placeholder="Option"
+                  class="border-2 border-gray-400 p-2 rounded-lg"
+                />
+              </div>
+              <div class="flex justify-center items-center">
+                <button
+                  type="submit"
+                  class="inline-block rounded-lg text-white bg-green-600 hover:bg-green-800 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- flash message -->
+          <div class="flex flex-col justify-center items-center gap-3 pt-4">
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+              <% for(var i=0; i<messages.error.length; i++) {%>
+                <div class="bg-red-300 text-red-900 font-semibold p-2 rounded-lg shadow"> <%= messages.error[i] %></div>
+              <% } %>
+            <% } %>
+          </div>
+        <% } %>
+
+        <!-- List of Options -->
+        <p class="font-semibold pt-4 text-xl">Options</p>
+        <div class="flex flex-col justify-center items-center p-4">
+            <div class="flex flex-col gap-4 justify-center w-full p-4">
+            <% if (options.length === 0) { %>
+                <h1 class="text-2xl flex justify-center text-gray-600 font-semibold">No options added</h1>
+            <% } %>
+            <% for (var i=0; i<options.length; i++) { %>
+                <div class="flex justify-between gap-6">
+                    <li class="text-xl"><%= options[i].value %></li>
+                    <% if (!election.launched) { %>
+                      <div class="flex gap-4 justify-center items-center">
+                        <a href="/election/<%= election.id %>/question/<%= question.id %>/option/<%= options[i].id %>/edit"><i class="cursor-pointer fa-solid fa-file-pen hover:text-blue-700 transition duration-200"></i></a>
+                        <div onclick="deleteOption('<%= options[i].id %>')"><button class="p-1 flex gap-2 items-center rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold px-4">Delete</button></div>
+                      </div>
+                    <% } %>
+                </div>
+            <% } %>
+            </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

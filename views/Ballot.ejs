@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <meta name="csrf-token" content="<%= csrf %>" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        />
+    </head>
+    <body>
+        <div>
+            <p class="text-xl">Voter ID: <b><%= voter.voterID %></b></p>
+        </div>
+        <form action="/election/<%= election.id %>/voter/<%= voter.id%>/submit" method="post" class="pt-6">
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
+            <% for (var i=0; i<questions.length; i++) { %>
+                <div>
+                    <p class="font-bold text-xl"><%= i+1 %>. <%= questions[i].title %></p>
+                    <p class="text-gray-600"><%= questions[i].description %></p>
+        
+                    <div class="pt-2 pl-6">
+                        <fieldset id="question-<%= questions[i].id %>">
+                            <% for (var j=0; j<options[i].length; j++) { %>
+                                <div class="flex gap-2">
+                                    <input
+                                        class="border-2 flex items-center border-gray-400 p-2 rounded-lg"
+                                        id="question-<%= questions[i].id %>-<%= options[i][j].id %>"
+                                        type="radio"
+                                        value="<%= options[i][j].id %>"
+                                        name="question-<%= questions[i].id %>"
+                                    />
+                                    <label for="question-<%= questions[i].id %>-<%= options[i][j].id %>"><%= options[i][j].value %></label>
+                                </div>
+                            <% } %>
+                        </fieldset>
+                    </div>
+                </div>
+            <% } %>
+            <button class="flex justify-center items-center w-full mt-8 p-2 rounded-lg bg-blue-500 hover:bg-blue-700 border-2 border-blue-800 text-white font-bold">Submit</button>
+        </form>
+    </body>
+</html>
