@@ -1185,7 +1185,6 @@ app.get(
   "/election/:id/result",
   // connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // fetching and calculating all results
     const questions = await question.findAll({
       where: {
         electionID: request.params.id,
